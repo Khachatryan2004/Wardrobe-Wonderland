@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load mathfilters %}
+
+
+<style>
+  .table-bordered th,
+  .table-bordered td {
+    border: 1px solid #dee2e6;
+    width: 150px;
+    padding: 1px;
+    text-align: center;
+  }
+
+</style>
+
+{% if cart|length > 0 %}
+<div class="site-section">
+      <div class="container">
+        <div class="row mb-5">
+          <form class="col-md-12" method="post">
+            <div class="site-blocks-table">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th class="product-thumbnail">Image</th>
+                    <th class="product-name">Product</th>
+                    <th class="product-price">Price</th>
+                    <th class="product-color">Color</th>
+                    <th class="product-size">Size</th>
+                    <th class="product-quantity">Quantity</th>
+                    <th class="product-total">Total</th>
+                    <th class="product-remove">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for item in cart %}
+                {% with product=item.item %}
+                  <tr>
+                    <td class="product-thumbnail">
+                      <a href="{% url 'item_detail' slug=product.slug %}">
+                          <img src="{{ product.image.url }}" alt="Image" class="img-fluid">
+                      </a>
+                    </td>
+                    <td class="product-name">
+                      <a href="{% url 'item_detail' slug=product.slug %}">
+                          <h2 class="h5 text-black">{{ product.name }}</h2>
+                      </a>
+                    </td>
+                    <td>${{ product.price }}</td>
+                    <td>{{ item.color }}</td>
+                    <td>{{ item.size }}</td>
+                    <td>
+                      <div class="col-6">
+                    <label for="select"></label>
+                    &nbsp;
+                    <select id="select{{ product.id }}">
+                    <option selected>{{ item.qty }}</option>
+                    <option value="">1</option>
+                    <option value="">2</option>
+                    <option value="">3</option>
+                    <option value="">4</option>
+                    <option value="">5</option>
+                    <option value="">6</option>
+                    <option value="">7</option>
+                    <option value="">8</option>
+                    <option value="">9</option>
+                    <option value="">10</option>
+                  </select>
+                </div>
+
+                    </td>
+                    <td>$ {{ product.price|mul:item.qty }}</td>
+                    &nbsp;
+                    <td>
+                      &nbsp;
+                      <button class="btn btn-primary btn-sm update-button" data-index="{{ product.id }}">Update Cart</button>
+                      <h3></h3>
+                      <button type="button" class="btn btn-danger btn-sm delete-button" data-index="{{ product.id }}">
+                        Delete
+                      </button>
+
+                    </td>
+                  </tr>
+
+                {% endwith %}
+                {% endfor %}
+
+
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row mb-5">
+              <div class="col-md-6">
+                <button class="btn btn-outline-primary btn-sm btn-block">Continue Shopping</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-black h4" for="coupon">Coupon</label>
+                <p>Enter your coupon code if you have one.</p>
+              </div>
+              <div class="col-md-8 mb-3 mb-md-0">
+                <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-primary btn-sm">Apply Coupon</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 pl-5">
+            <div class="row justify-content-end">
+              <div class="col-md-7">
+                <div class="row">
+                  <div class="col-md-12 text-right border-bottom mb-5">
+                    <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <span class="text-black">Subtotal</span>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <strong class="text-black">$230.00</strong>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <div class="col-md-6">
+                    <span class="text-black">Total</span>
+                  </div>
+                  <div id="total" class="col-md-6 text-right">
+                    <strong class="text-black">$ {{ cart.get_total_price }}</strong>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <a href="{% if user.is_authenticated %}{% url 'payment:checkout' %}{% else %}{% url 'cart_warning_page' %}{% endif %}"
+                       class="btn btn-primary btn-lg py-3 btn-block">
+                      Checkout
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% else %}
+    {% if user.is_authenticated  %}
+    <div style="text-align: center; margin-top: 200px; margin-bottom: 200px;">
+    <h5 style="color: black; font-size: 24px; font-weight: bold;">Your bag is empty</h5>
+      {% else %}
+      <div style="text-align: center; margin-top: 200px; margin-bottom: 200px;">
+    <h5 style="color: black; font-size: 24px; font-weight: bold;">Your bag is empty</h5>
+    <p style="color: black; font-size: 18px;">Jois us to get shopping</p>
+    <a href="{% url 'account:login' %}" class="btn btn-sm btn-primary" style="width: 200px;">Join</a>
+      {% endif %}
+</div>
+{% endif %}
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+ $(document).on('click', '.delete-button', function(e){
+        e.preventDefault();
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart:delete_from_cart" %}',
+            data: {
+                item_id: $(this).data('index'),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(response){
+                document.getElementById('count').textContent = response.qty
+                document.getElementById('total').textContent = response.total
+
+                location.reload()
+            },
+            error: function(error, status){
+                console.log(error)
+            }
+        })
+    });
+
+$(document).on('click', '.update-button', function(e){
+        e.preventDefault();
+
+        var item_id = $(this).data('index')
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart:update_cart" %}',
+            data: {
+                item_id: $(this).data('index'),
+                item_qty: $('#select'+item_id+ ' option:selected').text(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(response){
+                document.getElementById('count').textContent = response.qty
+                document.getElementById('total').textContent = response.total
+
+                location.reload()
+            },
+            error: function(error, status){
+                console.log(error)
+            }
+        })
+    });
+
+</script>
+
+{% endblock %}

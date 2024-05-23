@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mb-0">
+                <strong class="text-black">Saved Items</strong></div>
+        </div>
+    </div>
+</div>
+
+<div class="site-section">
+    <div class="container">
+
+        <div class="row mb-5">
+            <div class="col-md-9 order-2">
+                <div class="row">
+                    <div class="col-md-12 mb-5">
+                        <div class="float-md-left mb-4"><h2 class="text-black h5">Saved Items</h2></div>
+                        <div class="d-flex">
+                            <div class="dropdown mr-1 ml-md-auto">
+                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                                        id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                    Latest
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+                                    <a class="dropdown-item" href="#">Men</a>
+                                    <a class="dropdown-item" href="#">Women</a>
+                                </div>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                                        id="dropdownMenuReference" data-toggle="dropdown">Reference
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+                                    <a class="dropdown-item"
+                                       href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category|lower }}&women_sub_category={{ selected_women_sub_category|lower }}&ordering=name_az">
+                                        Name, A to Z
+                                    </a>
+
+                                    <a class="dropdown-item"
+                                       href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category|lower }}&women_sub_category={{ selected_women_sub_category|lower }}&ordering=name-za">
+                                        Name, Z to A
+                                    </a>
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category|lower }}&women_sub_category={{ selected_women_sub_category|lower }}&price_sort=low_to_high">Price, low to high</a>
+                                    <a class="dropdown-item" href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category|lower }}&women_sub_category={{ selected_women_sub_category|lower }}&price_sort=high_to_low">Price, high to low</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    {% for item in favorite %}
+                    {% with product=item.item %}
+                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                        <div class="block-4 text-center border">
+                            <figure class="block-4-image">
+                                <a href="{% url 'item_detail' slug=product.slug %}">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                                </a>
+                            </figure>
+                            <div class="block-4-text p-4">
+                                <h3><a href="{% url 'item_detail' slug=product.slug %}">{{ product.name }}</a></h3>
+
+                                <p class="mb-0">{{ product.category.name }}</p>
+                                <p class="mb-0">{{ product.men_sub_category.name }}</p>
+                                <p class="mb-0">{{ product.women_sub_category.name }}</p>
+                                <p class="text-primary font-weight-bold">${{ product.price }}</p>
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endwith %}
+                    {% endfor %}
+                </div>
+
+                <div class="row" data-aos="fade-up">
+                    <div class="col-md-12 text-center">
+                        <div class="site-block-27">
+                            <ul>
+                                <li><a href="#">&lt;</a></li>
+                                <li class="active"><span>1</span></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">5</a></li>
+                                <li><a href="#">&gt;</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 order-1 mb-5 mb-md-0">
+                <div class="border p-4 rounded mb-4">
+                    {% if selected_category == 'Men' %}
+                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Sub Categories</h3>
+                    <ul class="list-unstyled mb-0">
+                        {% for men_sub_category in men_sub_categories %}
+                            <li class="mb-1">
+                                <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ men_sub_category.slug }}">
+                                    <span>{{ men_sub_category.name }}</span>
+                                    <span class="text-black ml-auto">{{ men_sub_category.men_sub_categories.count }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% if selected_men_sub_category == 'Clothing' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_men_sub_category }} Types</h3>
+                        <ul class="list-unstyled mb-0">
+                            {% for clothing_type_men in clothing_types_men %}
+                                <li class="mb-1">
+                                    <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ men_sub_category.slug }}&clothing_type_men={{ clothing_type_men.slug }}">
+                                        <span>{{ clothing_type_men.name }}</span>
+                                        <span class="text-black ml-auto">{{ clothing_type_men.clothing_types_men.count }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% elif selected_men_sub_category == 'Shoes' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_men_sub_category }} Types</h3>
+                        <ul class="list-unstyled mb-0">
+                            {% for shoes_type_men in shoes_types_men %}
+                                <li class="mb-1">
+                                    <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category.slug }}&shoes_type_men={{ shoes_type_men.slug }}">
+                                        <span>{{ shoes_type_men.name }}</span>
+                                        <span class="text-black ml-auto">{{ shoes_type_men.shoes_types_men.count }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% elif selected_men_sub_category == 'Accessories' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_men_sub_category }} Types</h3>
+                        <ul class="list-unstyled mb-0">
+                            {% for accessories_type_men in accessories_types_men %}
+                                <li class="mb-1">
+                                    <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category.slug }}&accessories_type_men={{ accessories_type_men.slug }}">
+                                        <span>{{ accessories_type_men.name }}</span>
+                                        <span class="text-black ml-auto">{{ accessories_type_men.accessories_types_men.count }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% elif selected_category == 'Women' %}
+                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Sub Categories</h3>
+                    <ul class="list-unstyled mb-0">
+                        {% for women_sub_category in women_sub_categories %}
+                        <li class="mb-1">
+                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}">
+                                <span>{{ women_sub_category.name }}</span>
+                                <span class="text-black ml-auto">{{ women_sub_category.women_sub_categories.count }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if selected_women_sub_category == 'Clothing' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_women_sub_category }} Types</h3>
+                        <ul class="list-unstyled mb-0">
+                            {% for clothing_type_women in clothing_types_women %}
+                                <li class="mb-1">
+                                    <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}&clothing_type_women={{ clothing_type_women.slug }}">
+                                        <span>{{ clothing_type_women.name }}</span>
+                                        <span class="text-black ml-auto">{{ clothing_type_women.clothing_types_women.count }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% elif selected_women_sub_category == 'Shoes' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_women_sub_category }} Types</h3>
+                        <ul class="list-unstyled mb-0">
+                            {% for shoes_type_women in shoes_types_women %}
+                                <li class="mb-1">
+                                    <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}&shoes_type_women={{ shoes_type_women.slug }}">
+                                        <span>{{ shoes_type_women.name }}</span>
+                                        <span class="text-black ml-auto">{{ shoes_type_women.shoes_types_women.count }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% elif selected_women_sub_category == 'Accessories' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_women_sub_category }} Types</h3>
+                        <ul class="list-unstyled mb-0">
+                            {% for accessories_type_women in accessories_types_women %}
+                                <li class="mb-1">
+                                    <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}&accessories_type_women={{ accessories_type_women.slug }}">
+                                        <span>{{ accessories_type_women.name }}</span>
+                                        <span class="text-black ml-auto">{{ accessories_type_women.accessories_types_women.count }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% elif selected_women_sub_category == 'Dressing' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_women_sub_category }} Types</h3>
+                        <ul class="list-unstyled mb-0">
+                            {% for dresses_type_women in dresses_types_women %}
+                                <li class="mb-1">
+                                    <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}&dresses_type_women={{ dresses_type_women.slug }}">
+                                        <span>{{ dresses_type_women.name }}</span>
+                                        <span class="text-black ml-auto">{{ dresses_type_women.dresses_types_women.count }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% else %}
+                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Categories</h3>
+                    <ul class="list-unstyled mb-0">
+                        {% for category in categories %}
+                        <li class="mb-1">
+                            <a href="{% url 'item_list' %}?category={{ category.slug }}" class="d-flex">
+                                <span>{{ category.name }}</span>
+                                <span class="text-black ml-auto">{{ category.categories.count }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <div class="border p-4 rounded mb-4">
+                    {% if not selected_men_sub_category and not selected_women_sub_category %}
+                    <form method="get" action="{% url 'item_list' %}">
+                        <input type="hidden" name="category" value="{{ selected_category|lower }}">
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Min Price</h3>
+                        <input type="number" name="min_price" id="min_price" value="{{ request.GET.min_price }}" step="0.01">
+                        <br>
+                        <br>
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Max Price</h3>
+                        <input type="number" name="max_price" id="max_price" value="{{ request.GET.max_price }}" step="0.01">
+                        <br>
+                        <br>
+                        <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
+                    </form>
+                    {% endif %}
+
+                    {% if selected_men_sub_category == 'Clothing' or selected_women_sub_category == 'Clothing' %}
+                        <div class="mb-4">
+                            <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
+                            <form method="get" action="{% url 'item_list' %}">
+                                <input type="hidden" name="category" value="{{ selected_category|lower }}">
+                                {% if selected_men_sub_category %}
+                                    <input type="hidden" name="men_sub_category" value="{{ selected_men_sub_category_slug }}">
+                                {% endif %}
+                                {% if selected_women_sub_category %}
+                                    <input type="hidden" name="women_sub_category" value="{{ selected_women_sub_category_slug }}">
+                                {% endif %}
+                                <div class="form-group">
+                                    <select class="form-control" id="sizeDropdown" name="size_clothing">
+                                        <option value="" selected disabled>Choose a size</option>
+                                        {% for size, label in SIZE_CHOICES_CLOTHING %}
+                                            <option value="{{ size }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
+                                    <select class="form-control" id="colorDropdown" name="clothing_color">
+                                        <option value="" selected disabled>Choose a color</option>
+                                        {% for color, label in CLOTHING_COLOR %}
+                                            <option value="{{ color }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {% if selected_men_sub_category == 'Shoes' or selected_women_sub_category == 'Shoes' %}
+                    <div class="mb-4">
+                            <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
+                            <form method="get" action="{% url 'item_list' %}">
+                                <input type="hidden" name="category" value="{{ selected_category|lower }}">
+                                <div class="form-group">
+                                    <select class="form-control" id="sizeDropdown" name="size_shoes">
+                                        <option value="" selected disabled>Choose a size</option>
+                                        {% for size, label in SIZE_CHOICES_SHOES %}
+                                            <option value="{{ size }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
+                                    <select class="form-control" id="colorDropdown" name="shoes_color">
+                                        <option value="" selected disabled>Choose a color</option>
+                                        {% for color, label in SHOES_COLOR %}
+                                            <option value="{{ color }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {% if selected_men_sub_category == 'Accessories' or selected_women_sub_category == 'Accessories' %}
+                    <div class="mb-4">
+                            <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
+                            <form method="get" action="{% url 'item_list' %}">
+                                <input type="hidden" name="category" value="{{ selected_category|lower }}">
+                                <div class="form-group">
+                                    <select class="form-control" id="sizeDropdown" name="size_accessories">
+                                        <option value="" selected disabled>Choose a size</option>
+                                        {% for size, label in SIZE_CHOICES_ACCESSORIES %}
+                                            <option value="{{ size }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
+                                    <select class="form-control" id="colorDropdown" name="accessories_color">
+                                        <option value="" selected disabled>Choose a color</option>
+                                        {% for color, label in ACCESSORIES_COLOR %}
+                                            <option value="{{ color }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {% if selected_women_sub_category == 'Dressing' %}
+                    <div class="mb-4">
+                            <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
+                            <form method="get" action="{% url 'item_list' %}">
+                                <input type="hidden" name="category" value="{{ selected_category|lower }}">
+                                <div class="form-group">
+                                    <select class="form-control" id="sizeDropdown" name="size_dresses">
+                                        <option value="" selected disabled>Choose a size</option>
+                                        {% for size, label in SIZE_CHOICES_DRESSES %}
+                                            <option value="{{ size }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
+                                    <select class="form-control" id="colorDropdown" name="dresses_color">
+                                        <option value="" selected disabled>Choose a color</option>
+                                        {% for color, label in DRESSES_COLOR %}
+                                            <option value="{{ color }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
+                            </form>
+                        </div>
+                    {% endif %}
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

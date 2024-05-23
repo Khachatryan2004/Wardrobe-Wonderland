@@ -9,7 +9,7 @@
             <div class="intro-text text-center text-md-left">
               <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan tincidunt fringilla. </p>
               <p>
-                <a href="#" class="btn btn-sm btn-primary">Shop Now</a>
+                <a href="{% url 'item_list' %}" class="btn btn-sm btn-primary">Shop Now</a>
               </p>
             </div>
           </div>
@@ -52,44 +52,24 @@
     </div>
 
     <div class="site-section site-blocks-2">
-      <div class="container">
+    <div class="container" style="position: relative; left: 180px;">
         <div class="row">
-          <div class="col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0" data-aos="fade" data-aos-delay="">
-            <a class="block-2-item" href="#">
-              <figure class="image">
-                <img src="static/shop/img/women.jpg" alt="" class="img-fluid">
-              </figure>
-              <div class="text">
-                <span class="text-uppercase">Collections</span>
-                <h3>Women</h3>
-              </div>
-            </a>
-          </div>
-          <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="100">
-            <a class="block-2-item" href="#">
-              <figure class="image">
-                <img src="static/shop/img/children.jpg" alt="" class="img-fluid">
-              </figure>
-              <div class="text">
-                <span class="text-uppercase">Collections</span>
-                <h3>Children</h3>
-              </div>
-            </a>
-          </div>
-          <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
-            <a class="block-2-item" href="#">
-              <figure class="image">
-                <img src="static/shop/img/men.jpg" alt="" class="img-fluid">
-              </figure>
-              <div class="text">
-                <span class="text-uppercase">Collections</span>
-                <h3>Men</h3>
-              </div>
-            </a>
-          </div>
+            {% for category in categories %}
+            <div class="col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0" data-aos="fade" data-aos-delay="">
+                <a class="block-2-item" href="{% url 'item_list' %}?category={{ category.slug }}">
+                    <figure class="image">
+                        <img src="{{ category.image.url }}" alt="" class="img-fluid">
+                    </figure>
+                    <div class="text">
+                        <span class="text-uppercase">Collections</span>
+                        <h3>{{ category.name }}</h3>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
         </div>
-      </div>
     </div>
+</div>
 
     <div class="site-section block-3 site-blocks-2 bg-light">
       <div class="container">

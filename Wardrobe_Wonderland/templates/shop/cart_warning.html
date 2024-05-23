@@ -1,8 +1,36 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Welcome to our Community</title>
+    <title>Wardrobe &mdash; Wonderland</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+    <link rel="stylesheet" href="{% static 'shop/fonts/icomoon/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'shop/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/owl.theme.default.min.css' %}">
+
+
+    <link rel="stylesheet" href="{% static 'shop/css/aos.css' %}">
+
+    <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+    }
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -25,10 +53,33 @@
             color: #428bca;
             text-decoration: none;
         }
-    </style>
+</style>
 </head>
 <body>
-    <h1>Join Our Community!</h1>
-    <p>You need to be <a href="{% url 'registration_page' %}">registered</a> or <a href="{% url 'login_page' %}">logged </a>in to access this page.</p>
+  <div class="site-wrap">
+    <header class="site-navbar" role="banner" style="background-color: #f2f2f2;">
+          <div class="site-navbar-top">
+              <div class="container">
+                  <div class="row align-items-center justify-content-center">
+                      <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
+                          <div class="site-logo">
+                              <a href="{% url 'category' %}" class="js-logo-clone" style="display: inline-block;">Wardrobe Wonderland</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </header>
+      <div class="site-navbar-top">
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <h1>Join Our Community!</h1>
+        </div>
+        <div class="row align-items-center justify-content-center">
+            <p>You need to be <a href="{% url 'account:register' %}">registered</a> or <a href="{% url 'account:login' %}">logged in</a> to access this page.</p>
+        </div>
+    </div>
+</div>
+  </div>
 </body>
 </html>

@@ -1,137 +1,261 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <div class="bg-light py-3">
-      <div class="container">
+<div class="bg-light py-3">
+    <div class="container">
         <div class="row">
-          <div class="col-md-12 mb-0"><a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">{{ item.name }}</strong></div>
+            <div class="col-md-12 mb-0"><a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <strong
+                    class="text-black">{{ item.name }}</strong></div>
         </div>
-      </div>
-    </div>  
+    </div>
+</div>
 
-    <div class="site-section">
-      <div class="container">
+<div class="site-section">
+    <div class="container">
         <div class="row">
-          <div class="col-md-6">
-            <img src="{{ item.image.url }}" alt="Image" class="img-fluid">
-          </div>
-          <div class="col-md-6">
-            <h2 class="text-black">{{ item.name }}</h2>
-            <p>{{ item.description }}</p>
-            <p><strong class="text-primary h4">${{ item.price }}</strong></p>
-
-            <div class="mb-1 d-flex">
-              <label for="option-sm" class="d-flex mr-3 mb-3">
-                <span class="d-inline-block mr-2" style="top:-2px; position: relative;"><input type="radio" id="option-sm" name="shop-sizes"></span> <span class="d-inline-block text-black">Small</span>
-              </label>
-              <label for="option-md" class="d-flex mr-3 mb-3">
-                <span class="d-inline-block mr-2" style="top:-2px; position: relative;"><input type="radio" id="option-md" name="shop-sizes"></span> <span class="d-inline-block text-black">Medium</span>
-              </label>
-              <label for="option-lg" class="d-flex mr-3 mb-3">
-                <span class="d-inline-block mr-2" style="top:-2px; position: relative;"><input type="radio" id="option-lg" name="shop-sizes"></span> <span class="d-inline-block text-black">Large</span>
-              </label>
-              <label for="option-xl" class="d-flex mr-3 mb-3">
-                <span class="d-inline-block mr-2" style="top:-2px; position: relative;"><input type="radio" id="option-xl" name="shop-sizes"></span> <span class="d-inline-block text-black"> Extra Large</span>
-              </label>
-
+            <div class="col-md-6">
+                <img src="{{ item.image.url }}" alt="Image" class="img-fluid">
             </div>
-            <div class="mb-5">
-              <div class="input-group mb-3" style="max-width: 120px;">
-              <div class="input-group-prepend">
-                <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
-              </div>
-              <input type="text" class="form-control text-center" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-              <div class="input-group-append">
-                <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
-              </div>
-            </div>
+            <div class="col-md-6">
+                <h2 class="text-black">{{ item.name }}</h2>
+                <p>{{ item.description }}</p>
+                <p><strong class="text-primary h4">${{ item.price }}</strong></p>
 
+
+                    <div class="mb-4">
+                        {% if item.men_sub_category.name == 'Clothing' or item.women_sub_category.name == 'Clothing' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
+                            <div class="form-group">
+                                <select class="form-control" id="sizeDropdown" name="size_clothing">
+                                    <option value="" selected disabled>Choose a size</option>
+                                    {% for size, label in SIZE_CHOICES_CLOTHING %}
+                                    <option value="{{ size }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
+                                <select class="form-control" id="colorDropdown" name="clothing_color">
+                                    <option value="" selected disabled>Choose a color</option>
+                                    {% for color, label in CLOTHING_COLOR %}
+                                    <option value="{{ color }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                        {% elif item.men_sub_category.name == 'Shoes' or item.women_sub_category.name == 'Shoes' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
+                            <div class="form-group">
+                                <select class="form-control" id="sizeDropdown" name="size_clothing">
+                                    <option value="" selected disabled>Choose a size</option>
+                                    {% for size, label in SIZE_CHOICES_SHOES %}
+                                    <option value="{{ size }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
+                                <select class="form-control" id="colorDropdown" name="clothing_color">
+                                    <option value="" selected disabled>Choose a color</option>
+                                    {% for color, label in SHOES_COLOR %}
+                                    <option value="{{ color }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                        {% elif item.men_sub_category.name == 'Accessories' or item.women_sub_category.name == 'Accessories' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
+                            <div class="form-group">
+                                <select class="form-control" id="sizeDropdown" name="size_clothing">
+                                    <option value="" selected disabled>Choose a size</option>
+                                    {% for size, label in SIZE_CHOICES_ACCESSORIES %}
+                                    <option value="{{ size }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
+                                <select class="form-control" id="colorDropdown" name="clothing_color">
+                                    <option value="" selected disabled>Choose a color</option>
+                                    {% for color, label in ACCESSORIES_COLOR %}
+                                    <option value="{{ color }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                        {% elif item.women_sub_category.name == 'Dressing' %}
+                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
+                            <div class="form-group">
+                                <select class="form-control" id="sizeDropdown" name="size_clothing">
+                                    <option value="" selected disabled>Choose a size</option>
+                                    {% for size, label in SIZE_CHOICES_DRESSES %}
+                                    <option value="{{ size }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
+                                <select class="form-control" id="colorDropdown" name="clothing_color">
+                                    <option value="" selected disabled>Choose a color</option>
+                                    {% for color, label in DRESSES_COLOR %}
+                                    <option value="{{ color }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                <div class="col-6">
+                    <label for="select">Quantity</label>
+                    &nbsp;
+                    <select id="select">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+                <div class="col-6 text-end">
+                    <button type="button" id="add-button" value="{{ item.id }}" class="buy-now btn btn-sm btn-primary">
+                        Add to cart
+                    </button>
+                    <p>Total Purchased Count: {{ total_purchased_count }}</p>
+                </div>
             </div>
-             {% if user.is_authenticated %}
-            <p><a href="{% url 'cart_view_page' %}" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p>
-              {% else %}
-                <p><a href="{% url 'cart_warning_page' %}" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p>
-              {% endif %}
-          </div>
         </div>
-      </div>
     </div>
 
     <div class="site-section block-3 site-blocks-2 bg-light">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-md-7 site-section-heading text-center pt-4">
-            <h2>Featured Products</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="nonloop-block-3 owl-carousel">
-              <div class="item">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <img src="images/cloth_1.jpg" alt="Image placeholder" class="img-fluid">
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3><a href="#">Tank Top</a></h3>
-                    <p class="mb-0">Finding perfect t-shirt</p>
-                    <p class="text-primary font-weight-bold">$50</p>
-                  </div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-7 site-section-heading text-center pt-4">
+                    <h2>Featured Products</h2>
                 </div>
-              </div>
-              <div class="item">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <img src="images/shoe_1.jpg" alt="Image placeholder" class="img-fluid">
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3><a href="#">Corater</a></h3>
-                    <p class="mb-0">Finding perfect products</p>
-                    <p class="text-primary font-weight-bold">$50</p>
-                  </div>
-                </div>
-              </div>
-              <div class="item">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <img src="images/cloth_2.jpg" alt="Image placeholder" class="img-fluid">
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3><a href="#">Polo Shirt</a></h3>
-                    <p class="mb-0">Finding perfect products</p>
-                    <p class="text-primary font-weight-bold">$50</p>
-                  </div>
-                </div>
-              </div>
-              <div class="item">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <img src="images/cloth_3.jpg" alt="Image placeholder" class="img-fluid">
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3><a href="#">T-Shirt Mockup</a></h3>
-                    <p class="mb-0">Finding perfect products</p>
-                    <p class="text-primary font-weight-bold">$50</p>
-                  </div>
-                </div>
-              </div>
-              <div class="item">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <img src="images/shoe_1.jpg" alt="Image placeholder" class="img-fluid">
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3><a href="#">Corater</a></h3>
-                    <p class="mb-0">Finding perfect products</p>
-                    <p class="text-primary font-weight-bold">$50</p>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="nonloop-block-3 owl-carousel">
+                        <div class="item">
+                            <div class="block-4 text-center">
+                                <figure class="block-4-image">
+                                    <img src="images/cloth_1.jpg" alt="Image placeholder" class="img-fluid">
+                                </figure>
+                                <div class="block-4-text p-4">
+                                    <h3><a href="#">Tank Top</a></h3>
+                                    <p class="mb-0">Finding perfect t-shirt</p>
+                                    <p class="text-primary font-weight-bold">$50</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="block-4 text-center">
+                                <figure class="block-4-image">
+                                    <img src="images/shoe_1.jpg" alt="Image placeholder" class="img-fluid">
+                                </figure>
+                                <div class="block-4-text p-4">
+                                    <h3><a href="#">Corater</a></h3>
+                                    <p class="mb-0">Finding perfect products</p>
+                                    <p class="text-primary font-weight-bold">$50</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="block-4 text-center">
+                                <figure class="block-4-image">
+                                    <img src="images/cloth_2.jpg" alt="Image placeholder" class="img-fluid">
+                                </figure>
+                                <div class="block-4-text p-4">
+                                    <h3><a href="#">Polo Shirt</a></h3>
+                                    <p class="mb-0">Finding perfect products</p>
+                                    <p class="text-primary font-weight-bold">$50</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="block-4 text-center">
+                                <figure class="block-4-image">
+                                    <img src="images/cloth_3.jpg" alt="Image placeholder" class="img-fluid">
+                                </figure>
+                                <div class="block-4-text p-4">
+                                    <h3><a href="#">T-Shirt Mockup</a></h3>
+                                    <p class="mb-0">Finding perfect products</p>
+                                    <p class="text-primary font-weight-bold">$50</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="block-4 text-center">
+                                <figure class="block-4-image">
+                                    <img src="images/shoe_1.jpg" alt="Image placeholder" class="img-fluid">
+                                </figure>
+                                <div class="block-4-text p-4">
+                                    <h3><a href="#">Corater</a></h3>
+                                    <p class="mb-0">Finding perfect products</p>
+                                    <p class="text-primary font-weight-bold">$50</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-{% endblock %}
+<script>
+$(document).on('click', '#add-button', function(e){
+    e.preventDefault();
+
+    var selectedSize = $('#sizeDropdown').val();
+    var selectedColor = $('#colorDropdown').val();
+
+    if (!selectedSize || !selectedColor) {
+        if (!selectedSize) {
+            $('#sizeDropdown').css('border-color', 'red');
+            $('#sizeWarning').text('Please choose a size').css('color', 'red');
+        }
+        if (!selectedColor) {
+            $('#colorDropdown').css('border-color', 'red');
+            $('#colorWarning').text('Please choose a color').css('color', 'red');
+        }
+        return;
+    } else {
+        $('#sizeDropdown').css('border-color', '');
+        $('#sizeWarning').text('Choose a size').css('color', '');
+        $('#colorDropdown').css('border-color', '');
+        $('#colorWarning').text('Choose a color').css('color', '');
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '{% url "cart:add_to_cart" %}',
+        data: {
+            item_id: $('#add-button').val(),
+            item_qty: $('#select option:selected').text(),
+            item_color: selectedColor,
+            item_size: selectedSize,
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function (response) {
+            document.getElementById('count').textContent = response.qty;
+            const add_button = document.getElementById('add-button');
+            add_button.disabled = true;
+            add_button.innerText = 'Added to cart';
+            add_button.className = 'buy-now btn btn-sm btn-primary';
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+
+});
+</script>
+    {% endblock %}
