@@ -1,13 +1,370 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<style>
+    .active {
+    border-top: 2px solid #8D6CC6;
+}
+</style>
 <div class="bg-light py-3">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12 mb-0"><a href="{% url 'category' %}">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                    class="text-black">Shop</strong></div>
+            <div class="row justify-content-center">
+            {% if selected_subcategory %}
+            <!--Sort-->
+            <div class="form-group mr-2 {% if request.GET.ordering %}active{% endif %}">
+                <button type="button"  class="btn btn-secondary btn-sm dropdown-toggle custom-text-size"
+                        id="dropdownMenuReference" data-toggle="dropdown">Sort
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}{% if selected_type %}&type={{ selected_type.slug|lower }}{% endif %}{% if selected_size %}&size={{ selected_size.slug|lower }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug|lower }}{% endif %}{% if selected_color %}&color={{ selected_color.slug|lower }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}&ordering=name_az">
+                        Name, A to Z
+                    </a>
+
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}{% if selected_type %}&type={{ selected_type.slug|lower }}{% endif %}{% if selected_size %}&size={{ selected_size.slug|lower }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug|lower }}{% endif %}{% if selected_color %}&color={{ selected_color.slug|lower }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}&ordering=name_za">
+                        Name, Z to A
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}{% if selected_type %}&type={{ selected_type.slug|lower }}{% endif %}{% if selected_size %}&size={{ selected_size.slug|lower }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug|lower }}{% endif %}{% if selected_color %}&color={{ selected_color.slug|lower }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}&ordering=low_to_high">Price,
+                        low to high</a>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}{% if selected_type %}&type={{ selected_type.slug|lower }}{% endif %}{% if selected_size %}&size={{ selected_size.slug|lower }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug|lower }}{% endif %}{% if selected_color %}&color={{ selected_color.slug|lower }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}&ordering=high_to_low">Price,
+                        high to low</a>
+                    <hr>
+
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}{% if selected_type %}&type={{ selected_type.slug|lower }}{% endif %}{% if selected_size %}&size={{ selected_size.slug|lower }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug|lower }}{% endif %}{% if selected_color %}&color={{ selected_color.slug|lower }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}&ordering=newest">
+                        Newest First</a>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}{% if selected_type %}&type={{ selected_type.slug|lower }}{% endif %}{% if selected_size %}&size={{ selected_size.slug|lower }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug|lower }}{% endif %}{% if selected_color %}&color={{ selected_color.slug|lower }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}&ordering=oldest">
+                        Oldest First</a>
+                    <hr>
+
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}{% if selected_type %}&type={{ selected_type.slug|lower }}{% endif %}{% if selected_size %}&size={{ selected_size.slug|lower }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug|lower }}{% endif %}{% if selected_color %}&color={{ selected_color.slug|lower }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                       Clear
+                    </a>
+
+                </div>
+            </div>
+            <!--Type-->
+            <div class="form-group mr-2 {% if selected_type %}active{% endif %}">
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                        id="dropdownMenuReferenceType" data-toggle="dropdown">Type
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReferenceType">
+                    {% for type in types %}
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&type={{ type.slug }}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        <span class="text-black ml-auto">{{ type.type }} ({{ type.types.count }})</span>
+                    </a>
+                    {% endfor %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        Clear
+                    </a>
+                </div>
+            </div>
+            <!--Size-->
+            <div class="form-group mr-2 {% if selected_size %}active{% endif %}">
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                        id="dropdownMenuReferenceSize" data-toggle="dropdown">Size
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReferenceSize">
+                    {% for size in sizes %}
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&size={{ size.slug }}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        <span class="text-black ml-auto">{{ size.size }} ({{ size.sizes.count }})</span>
+                    </a>
+                    {% endfor %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        Clear
+                    </a>
+                </div>
+            </div>
+            <!--Brand-->
+            <div class="form-group mr-2 {% if selected_brand %}active{% endif %}">
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                        id="dropdownMenuReferenceSize" data-toggle="dropdown">Brand
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReferenceSize">
+                    {% for brand in brands %}
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&brand={{ brand.slug }}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        <span class="text-black ml-auto">{{ brand.brand }} ({{ brand.brands.count }})</span>
+                    </a>
+                    {% endfor %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        Clear
+                    </a>
+                </div>
+            </div>
+            <!--Color-->
+            <div class="form-group mr-2 {% if selected_color %}active{% endif %}">
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                        id="dropdownMenuReferenceSize" data-toggle="dropdown">Color
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReferenceSize">
+                    {% for color in colors %}
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&color={{ color.slug }}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        <span class="text-black ml-auto">{{ color.name }} ({{ color.colors.count }})</span>
+                    </a>
+                    {% endfor %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        Clear
+                    </a>
+                </div>
+            </div>
+            <!-- Price -->
+            <div class="form-group mr-2 {% if request.GET.max_price or request.GET.min_price %}active{% endif %} ">
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                        id="dropdownMenuReferenceSize" data-toggle="dropdown">Price
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReferenceSize">
+                    <div class="mb-4">
+                        <form method="get" action="{% url 'item_list' %}">
+                            <input type="hidden" name="category" value="{{ selected_category.slug|lower }}">
+                            <input type="hidden" name="subcategory" value="{{ selected_subcategory.slug|lower }}">
+                            {% if selected_type %}
+                            <input type="hidden" name="type" value="{{ selected_type.slug|lower }}">
+                            {% endif %}
+                            {% if selected_size %}
+                            <input type="hidden" name="size" value="{{ selected_size.slug|lower }}">
+                            {% endif %}
+                            {% if selected_brand %}
+                            <input type="hidden" name="brand" value="{{ selected_brand.slug|lower }}">
+                            {% endif %}
+                            {% if selected_color %}
+                            <input type="hidden" name="color" value="{{ selected_color.slug|lower }}">
+                            {% endif %}
+
+                            <h3 class="mb-3 h6 text-uppercase text-black d-block">Min Price</h3>
+                            <input type="number" name="min_price" id="min_price" value="{{ request.GET.min_price }}"
+                                   step="0.01" placeholder="Min: {{ min_price }}">
+                            <br><br>
+                            <h3 class="mb-3 h6 text-uppercase text-black d-block">Max Price</h3>
+                            <input type="number" name="max_price" id="max_price" value="{{ request.GET.max_price }}"
+                                   step="0.01" placeholder="Max: {{ max_price }}">
+                            <br><br>
+                            <a class="dropdown-item"
+                               href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}{% if selected_type %}&type={{ selected_type.slug|lower }}{% endif %}{% if selected_size %}&size={{ selected_size.slug|lower }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug|lower }}{% endif %}{% if selected_color %}&color={{ selected_color.slug|lower }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}"
+                               onclick="this.href += document.getElementById('min_price').value ? '&min_price=' + document.getElementById('min_price').value : ''; this.href += document.getElementById('max_price').value ? '&max_price=' + document.getElementById('max_price').value : '';">
+                                Apply
+                            </a>
+                        </form>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        Clear
+                    </a>
+                </div>
+                </div>
+            </div>
+             <!--Discount-->
+            <div class="form-group mr-2 {% if request.GET.discount %}active{% endif %} ">
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                        id="dropdownMenuReferenceSize" data-toggle="dropdown">Discount
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReferenceSize">
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=up_to_20{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">Up to 20%</span>
+                    </a>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=20_to_30{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">20% - 30%</span>
+                    </a>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=30_to_40{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">30% - 40%</span>
+                    </a>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=40_to_50{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">40% - 50%</span>
+                    </a>
+
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=50_to_60{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">50% - 60%</span>
+                    </a>
+
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=60_or_more{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">60% to more</span>
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        Clear
+                    </a>
+                </div>
+            </div>
+            {% else  %}
+            <div class="col-md-12 mb-0">
+                <a href="{% url 'category' %}"><strong
+                    class="text-black" >Home / </strong></a>
+                <a href="{% url 'item_list' %}"><strong
+                    class="text-black" >Shop</strong></a></div>
+            {% endif %}
         </div>
+
+        <!-- FOR SEARCH PRODUCTS -->
+            <div class="row justify-content-center">
+                {% if search %}
+                <!-- Color -->
+                <div class="form-group mr-2 {% if selected_subcategory %}active{% endif %}">
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                            id="dropdownMenuReferenceType" data-toggle="dropdown">Color
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReferenceType">
+                        {% for color in colors %}
+                        <a class="dropdown-item"
+                           href="{% url 'item_list' %}?q={{ q }}&color={{ color.slug|lower }}">
+                            <span class="text-black ml-auto">{{ color.name }} ({{ color.colors.count }})</span>
+                        </a>
+                        {% endfor %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item"
+                           href="{% url 'item_list' %}?q={{ q }}">
+                            Clear
+                        </a>
+                    </div>
+                </div>
+            <!-- Price -->
+            <div class="form-group mr-2 {% if request.GET.max_price or request.GET.min_price %}active{% endif %} ">
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                        id="dropdownMenuReferenceSize" data-toggle="dropdown">Price
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReferenceSize">
+                    <div class="mb-4">
+                        <form method="get" action="{% url 'item_list' %}">
+                            <input type="hidden" name="category" value="{{ selected_category.slug|lower }}">
+                            <input type="hidden" name="subcategory" value="{{ selected_subcategory.slug|lower }}">
+                            {% if selected_type %}
+                            <input type="hidden" name="type" value="{{ selected_type.slug|lower }}">
+                            {% endif %}
+                            {% if selected_size %}
+                            <input type="hidden" name="size" value="{{ selected_size.slug|lower }}">
+                            {% endif %}
+                            {% if selected_brand %}
+                            <input type="hidden" name="brand" value="{{ selected_brand.slug|lower }}">
+                            {% endif %}
+                            {% if selected_color %}
+                            <input type="hidden" name="color" value="{{ selected_color.slug|lower }}">
+                            {% endif %}
+
+                            <h3 class="mb-3 h6 text-uppercase text-black d-block">Min Price</h3>
+                            <input type="number" name="min_price" id="min_price" value="{{ request.GET.min_price }}"
+                                   step="0.01" placeholder="Min: {{ min_price }}">
+                            <br><br>
+                            <h3 class="mb-3 h6 text-uppercase text-black d-block">Max Price</h3>
+                            <input type="number" name="max_price" id="max_price" value="{{ request.GET.max_price }}"
+                                   step="0.01" placeholder="Max: {{ max_price }}">
+                            <br><br>
+                            <a class="dropdown-item"
+                               href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}{% if selected_type %}&type={{ selected_type.slug|lower }}{% endif %}{% if selected_size %}&size={{ selected_size.slug|lower }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug|lower }}{% endif %}{% if selected_color %}&color={{ selected_color.slug|lower }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}"
+                               onclick="this.href += document.getElementById('min_price').value ? '&min_price=' + document.getElementById('min_price').value : ''; this.href += document.getElementById('max_price').value ? '&max_price=' + document.getElementById('max_price').value : '';">
+                                Apply
+                            </a>
+                        </form>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if request.GET.discount %}&discount={{ request.GET.discount }}{% endif %}">
+                        Clear
+                    </a>
+                </div>
+                </div>
+            </div>
+             <!--Discount-->
+            <div class="form-group mr-2 {% if request.GET.discount %}active{% endif %} ">
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                        id="dropdownMenuReferenceSize" data-toggle="dropdown">Discount
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReferenceSize">
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=up_to_20{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">Up to 20%</span>
+                    </a>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=20_to_30{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">20% - 30%</span>
+                    </a>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=30_to_40{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">30% - 40%</span>
+                    </a>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=40_to_50{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">40% - 50%</span>
+                    </a>
+
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=50_to_60{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">50% - 60%</span>
+                    </a>
+
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}&discount=60_or_more{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        <span class="text-black ml-auto">60% to more</span>
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       href="{% url 'item_list' %}?category={{ selected_category.slug }}&subcategory={{ selected_subcategory.slug }}{% if selected_color %}&color={{ selected_color.slug }}{% endif %}{% if selected_type %}&type={{ selected_type.slug }}{% endif %}{% if selected_size %}&size={{ selected_size.slug }}{% endif %}{% if selected_brand %}&brand={{ selected_brand.slug }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                        Clear
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if selected_subcategory %}
+        {% if selected_category %}
+        <a href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}" style="color: black;">
+            <strong><span>{{ selected_category }} |</span></strong>
+        </a>
+        {% endif %}
+        {% if selected_subcategory %}
+        <a href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug|lower }}" style="color: black;">
+            <strong><span>{{ selected_subcategory }} |</span></strong>
+            </a>
+        {% endif %}
+        {% if selected_type %}
+        <a href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug }}&type={{ selected_type.slug|lower }}" style="color: black;">
+                <strong><span>{{ selected_type }} |</span></strong>
+            </a>
+        {% endif %}
+        {% if selected_size %}
+        <a href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug }}&size={{ selected_size.slug|lower }}" style="color: black;">
+                <strong><span>{{ selected_size }} |</span></strong>
+            </a>
+        {% endif %}
+        {% if selected_brand %}
+        <a href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug }}&brand={{ selected_brand.slug|lower }}" style="color: black;">
+                <strong><span>{{ selected_brand }} |</span></strong>
+            </a>
+        {% endif %}
+        {% if selected_color %}
+        <a href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ selected_subcategory.slug }}&color={{ selected_color.slug|lower }}" style="color: black;">
+                <strong><span>{{ selected_color }} |</span></strong>
+            </a>
+        {% endif %}
+        {% endif %}
+
     </div>
+
 </div>
 
 <div class="site-section">
@@ -18,126 +375,65 @@
                 <div class="row">
                     <div class="col-md-12 mb-5">
                         {% if selected_category %}
-                        <div class="float-md-left mb-4"><h2 class="text-black h5">Shop for {{ selected_category }}</h2>
+                        <div class="float-md-left mb-4">
+                            <h2 class="text-black h5">Shop for {{ selected_category }}</h2>
                         </div>
-                        {% elif not q %}
-                        <div class="float-md-left mb-4"><h2 class="text-black h5">Shop for All</h2></div>
-                        {% elif results %}
-                        <div class="float-md-left mb-4"><h2 class="text-black h5">Results for {{ q }}</h2></div>
-                        {% elif not results %}
-                        <div class="float-md-left mb-4"><h2 class="text-black h5">No results found for {{ q }}</h2>
+                        {% elif q %}
+                        <div class="float-md-left mb-4">
+                            <h2 class="text-black h5">Results for "{{ q }}"</h2>
+                        </div>
+                        {% elif search %}
+                        <div class="float-md-left mb-4">
+                            <h2 class="text-black h5">Results for "{{ q }}"</h2>
+                        </div>
+                        {% else %}
+                        <div class="float-md-left mb-4">
+                            <h2 class="text-black h5">Shop for All</h2>
                         </div>
                         {% endif %}
+
+                        {% if not selected_subcategory and not search  %}
                         <div class="d-flex">
                             <div class="dropdown mr-1 ml-md-auto">
-                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
-                                        id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                    Latest
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
-                                    <a class="dropdown-item" href="#">Men</a>
-                                    <a class="dropdown-item" href="#">Women</a>
-                                </div>
-                            </div>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
-                                        id="dropdownMenuReference" data-toggle="dropdown">Reference
+                                        id="dropdownMenuReference" data-toggle="dropdown">Sort
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
                                     <a class="dropdown-item"
-                                       href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category|lower }}&women_sub_category={{ selected_women_sub_category|lower }}&ordering=name_az">
+                                       href="{% url 'item_list' %}{% if selected_category %}?category={{ selected_category.slug|lower }}&{% else %}?{% endif %}ordering=name_az">
                                         Name, A to Z
                                     </a>
 
                                     <a class="dropdown-item"
-                                       href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category|lower }}&women_sub_category={{ selected_women_sub_category|lower }}&ordering=name-za">
+                                       href="{% url 'item_list' %}{% if selected_category %}?category={{ selected_category.slug|lower }}&{% else %}?{% endif %}ordering=name_za">
                                         Name, Z to A
                                     </a>
 
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item"
-                                       href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category|lower }}&women_sub_category={{ selected_women_sub_category|lower }}&price_sort=low_to_high">Price,
+                                       href="{% url 'item_list' %}{% if selected_category %}?category={{ selected_category.slug|lower }}&{% else %}?{% endif %}ordering=low_to_high">Price,
                                         low to high</a>
                                     <a class="dropdown-item"
-                                       href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category|lower }}&women_sub_category={{ selected_women_sub_category|lower }}&price_sort=high_to_low">Price,
+                                       href="{% url 'item_list' %}{% if selected_category %}?category={{ selected_category.slug|lower }}&{% else %}?{% endif %}ordering=high_to_low">Price,
                                         high to low</a>
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item"
+                                       href="{% url 'item_list' %}{% if selected_category %}?category={{ selected_category.slug|lower }}&{% else %}?{% endif %}ordering=newest">
+                                        Newest First</a>
+                                    <a class="dropdown-item"
+                                       href="{% url 'item_list' %}{% if selected_category %}?category={{ selected_category.slug|lower }}&{% else %}?{% endif %}ordering=oldest">
+                                        Oldest First</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="row mb-5">
-                    {% if results %}
-                    {% for item in results %}
-                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                        <div class="block-4 text-center border">
-                            <figure class="block-4-image">
-                                <a href="{% url 'item_detail' slug=item.slug %}">
-                                    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="img-fluid">
-                                </a>
-                            </figure>
-                            <div class="block-4-text p-4">
-                                <h3><a href="{% url 'item_detail' slug=item.slug %}">{{ item.name }}</a></h3>
-
-                                <p class="mb-0">{{ item.category.name }}</p>
-                                <p class="mb-0">{{ item.men_sub_category.name }}</p>
-                                <p class="mb-0">{{ item.women_sub_category.name }}</p>
-
-                                <p class="text-primary font-weight-bold">${{ item.price }}</p>
-                                {% if user.is_authenticated %}
-                                <form method="post" action="">
-                                    {% csrf_token %}
-                                    <a href="{% url 'favorite:add_to_favorite' %}"><span
-                                            class="icon icon-heart-o"></span></a>
-                                </form>
-                                {% else %}
-                                <form method="post" action="{% url 'cart_warning_page' %}">
-                                    {% csrf_token %}
-                                    <a href="{% url 'favorite:add_to_favorite' %}"><span
-                                            class="icon icon-heart-o"></span></a>
-                                </form>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-
-                    {% if items %}
-                    {% for item in items %}
-                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                        <div class="block-4 text-center border">
-                            <figure class="block-4-image">
-                                <a href="{% url 'item_detail' slug=item.slug %}">
-                                    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="img-fluid">
-                                </a>
-                            </figure>
-                            <div class="block-4-text p-4">
-                                <h3><a href="{% url 'item_detail' slug=item.slug %}">{{ item.name }}</a></h3>
-                                <p class="mb-0">{{ item.category.name }}</p>
-                                <p class="mb-0">{{ item.men_sub_category.name }}</p>
-                                <p class="mb-0">{{ item.women_sub_category.name }}</p>
-                                <p class="text-primary font-weight-bold">${{ item.price }}</p>
-                                {% if user.is_authenticated %}
-                                <button type="button" class="add-favorite-btn" value="{{ item.id }}">
-                                    <span class="icon icon-heart-o"></span>
-                                </button>
-                                {% else %}
-                                    <form method="post" action="{% url 'cart_warning_page' %}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="cart-btn">
-                                            <span class="icon icon-heart-o"></span>
-                                        </button>
-                                    </form>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    {% else %}
-                    <p>No items found.</p>
-                    {% endif %}
+                    {% include 'components/item_list.html' %}
                 </div>
 
                 <div class="row" data-aos="fade-up">
@@ -156,126 +452,28 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-md-3 order-1 mb-5 mb-md-0">
+                {% if not search %}
                 <div class="border p-4 rounded mb-4">
-                    {% if selected_category == 'Men' %}
+                    {% if selected_category %}
                     <h3 class="mb-3 h6 text-uppercase text-black d-block">Sub Categories</h3>
                     <ul class="list-unstyled mb-0">
-                        {% for men_sub_category in men_sub_categories %}
-                        <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ men_sub_category.slug }}">
-                                <span>{{ men_sub_category.name }}</span>
-                                <span class="text-black ml-auto">{{ men_sub_category.men_sub_categories.count }}</span>
-                            </a>
-                        </li>
+                        {% for subcategory in subcategories %}
+                            <li class="mb-1">
+                                <a href="{% url 'item_list' %}?category={{ selected_category.slug|lower }}&subcategory={{ subcategory.slug }}">
+                                    <strong><span>{{ subcategory.subcategory }}</span></strong>
+                                    <span class="text-black ml-auto">{{ subcategory.subcategories.count }}</span>
+                                </a>
+                            </li>
                         {% endfor %}
                     </ul>
-                    {% if selected_men_sub_category == 'Clothing' %}
-                    <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_men_sub_category }} Types</h3>
-                    <ul class="list-unstyled mb-0">
-                        {% for clothing_type_men in clothing_types_men %}
-                        <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ men_sub_category.slug }}&clothing_type_men={{ clothing_type_men.slug }}">
-                                <span>{{ clothing_type_men.name }}</span>
-                                <span class="text-black ml-auto">{{ clothing_type_men.clothing_types_men.count }}</span>
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% elif selected_men_sub_category == 'Shoes' %}
-                    <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_men_sub_category }} Types</h3>
-                    <ul class="list-unstyled mb-0">
-                        {% for shoes_type_men in shoes_types_men %}
-                        <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category.slug }}&shoes_type_men={{ shoes_type_men.slug }}">
-                                <span>{{ shoes_type_men.name }}</span>
-                                <span class="text-black ml-auto">{{ shoes_type_men.shoes_types_men.count }}</span>
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% elif selected_men_sub_category == 'Accessories' %}
-                    <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_men_sub_category }} Types</h3>
-                    <ul class="list-unstyled mb-0">
-                        {% for accessories_type_men in accessories_types_men %}
-                        <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&men_sub_category={{ selected_men_sub_category.slug }}&accessories_type_men={{ accessories_type_men.slug }}">
-                                <span>{{ accessories_type_men.name }}</span>
-                                <span class="text-black ml-auto">{{ accessories_type_men.accessories_types_men.count }}</span>
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                    {% elif selected_category == 'Women' %}
-                    <h3 class="mb-3 h6 text-uppercase text-black d-block">Sub Categories</h3>
-                    <ul class="list-unstyled mb-0">
-                        {% for women_sub_category in women_sub_categories %}
-                        <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}">
-                                <span>{{ women_sub_category.name }}</span>
-                                <span class="text-black ml-auto">{{ women_sub_category.women_sub_categories.count }}</span>
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% if selected_women_sub_category == 'Clothing' %}
-                    <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_women_sub_category }} Types</h3>
-                    <ul class="list-unstyled mb-0">
-                        {% for clothing_type_women in clothing_types_women %}
-                        <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}&clothing_type_women={{ clothing_type_women.slug }}">
-                                <span>{{ clothing_type_women.name }}</span>
-                                <span class="text-black ml-auto">{{ clothing_type_women.clothing_types_women.count }}</span>
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% elif selected_women_sub_category == 'Shoes' %}
-                    <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_women_sub_category }} Types</h3>
-                    <ul class="list-unstyled mb-0">
-                        {% for shoes_type_women in shoes_types_women %}
-                        <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}&shoes_type_women={{ shoes_type_women.slug }}">
-                                <span>{{ shoes_type_women.name }}</span>
-                                <span class="text-black ml-auto">{{ shoes_type_women.shoes_types_women.count }}</span>
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% elif selected_women_sub_category == 'Accessories' %}
-                    <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_women_sub_category }} Types</h3>
-                    <ul class="list-unstyled mb-0">
-                        {% for accessories_type_women in accessories_types_women %}
-                        <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}&accessories_type_women={{ accessories_type_women.slug }}">
-                                <span>{{ accessories_type_women.name }}</span>
-                                <span class="text-black ml-auto">{{ accessories_type_women.accessories_types_women.count }}</span>
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% elif selected_women_sub_category == 'Dressing' %}
-                    <h3 class="mb-3 h6 text-uppercase text-black d-block">{{ selected_women_sub_category }} Types</h3>
-                    <ul class="list-unstyled mb-0">
-                        {% for dresses_type_women in dresses_types_women %}
-                        <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ selected_category|lower }}&women_sub_category={{ women_sub_category.slug }}&dresses_type_women={{ dresses_type_women.slug }}">
-                                <span>{{ dresses_type_women.name }}</span>
-                                <span class="text-black ml-auto">{{ dresses_type_women.dresses_types_women.count }}</span>
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                    {% else %}
+                    {% elif not selected_category %}
                     <h3 class="mb-3 h6 text-uppercase text-black d-block">Categories</h3>
                     <ul class="list-unstyled mb-0">
                         {% for category in categories %}
                         <li class="mb-1">
-                            <a href="{% url 'item_list' %}?category={{ category.slug }}" class="d-flex">
-                                <span>{{ category.name }}</span>
+                            <a href="{% url 'item_list' %}?category={{ category.slug }}"  class="d-flex">
+                                <strong><span>{{ category.name }}</span></strong>
                                 <span class="text-black ml-auto">{{ category.categories.count }}</span>
                             </a>
                         </li>
@@ -283,144 +481,12 @@
                     </ul>
                     {% endif %}
                 </div>
-
-                <div class="border p-4 rounded mb-4">
-                    {% if not selected_men_sub_category and not selected_women_sub_category %}
-                    <form method="get" action="{% url 'item_list' %}">
-                        <input type="hidden" name="category" value="{{ selected_category|lower }}">
-                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Min Price</h3>
-                        <input type="number" name="min_price" id="min_price" value="{{ request.GET.min_price }}"
-                               step="0.01">
-                        <br>
-                        <br>
-                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Max Price</h3>
-                        <input type="number" name="max_price" id="max_price" value="{{ request.GET.max_price }}"
-                               step="0.01">
-                        <br>
-                        <br>
-                        <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
-                    </form>
-                    {% endif %}
-
-                    {% if selected_men_sub_category == 'Clothing' or selected_women_sub_category == 'Clothing' %}
-                    <div class="mb-4">
-                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
-                        <form method="get" action="{% url 'item_list' %}">
-                            <input type="hidden" name="category" value="{{ selected_category|lower }}">
-                            {% if selected_men_sub_category %}
-                            <input type="hidden" name="men_sub_category" value="{{ selected_men_sub_category_slug }}">
-                            {% endif %}
-                            {% if selected_women_sub_category %}
-                            <input type="hidden" name="women_sub_category"
-                                   value="{{ selected_women_sub_category_slug }}">
-                            {% endif %}
-                            <div class="form-group">
-                                <select class="form-control" id="sizeDropdown" name="size_clothing">
-                                    <option value="" selected disabled>Choose a size</option>
-                                    {% for size, label in SIZE_CHOICES_CLOTHING %}
-                                    <option value="{{ size }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
-                                <select class="form-control" id="colorDropdown" name="clothing_color">
-                                    <option value="" selected disabled>Choose a color</option>
-                                    {% for color, label in CLOTHING_COLOR %}
-                                    <option value="{{ color }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
-                        </form>
-                    </div>
-                    {% endif %}
-                    {% if selected_men_sub_category == 'Shoes' or selected_women_sub_category == 'Shoes' %}
-                    <div class="mb-4">
-                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
-                        <form method="get" action="{% url 'item_list' %}">
-                            <input type="hidden" name="category" value="{{ selected_category|lower }}">
-                            <div class="form-group">
-                                <select class="form-control" id="sizeDropdown" name="size_shoes">
-                                    <option value="" selected disabled>Choose a size</option>
-                                    {% for size, label in SIZE_CHOICES_SHOES %}
-                                    <option value="{{ size }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
-                                <select class="form-control" id="colorDropdown" name="shoes_color">
-                                    <option value="" selected disabled>Choose a color</option>
-                                    {% for color, label in SHOES_COLOR %}
-                                    <option value="{{ color }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
-                        </form>
-                    </div>
-                    {% endif %}
-                    {% if selected_men_sub_category == 'Accessories' or selected_women_sub_category == 'Accessories' %}
-                    <div class="mb-4">
-                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
-                        <form method="get" action="{% url 'item_list' %}">
-                            <input type="hidden" name="category" value="{{ selected_category|lower }}">
-                            <div class="form-group">
-                                <select class="form-control" id="sizeDropdown" name="size_accessories">
-                                    <option value="" selected disabled>Choose a size</option>
-                                    {% for size, label in SIZE_CHOICES_ACCESSORIES %}
-                                    <option value="{{ size }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
-                                <select class="form-control" id="colorDropdown" name="accessories_color">
-                                    <option value="" selected disabled>Choose a color</option>
-                                    {% for color, label in ACCESSORIES_COLOR %}
-                                    <option value="{{ color }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
-                        </form>
-                    </div>
-                    {% endif %}
-                    {% if selected_women_sub_category == 'Dressing' %}
-                    <div class="mb-4">
-                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
-                        <form method="get" action="{% url 'item_list' %}">
-                            <input type="hidden" name="category" value="{{ selected_category|lower }}">
-                            <div class="form-group">
-                                <select class="form-control" id="sizeDropdown" name="size_dresses">
-                                    <option value="" selected disabled>Choose a size</option>
-                                    {% for size, label in SIZE_CHOICES_DRESSES %}
-                                    <option value="{{ size }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
-                                <select class="form-control" id="colorDropdown" name="dresses_color">
-                                    <option value="" selected disabled>Choose a color</option>
-                                    {% for color, label in DRESSES_COLOR %}
-                                    <option value="{{ color }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button type="submit" style="color: black;" class="btn btn-primary">Apply</button>
-                        </form>
-                    </div>
-                    {% endif %}
-
-
                 </div>
+            {% endif %}
             </div>
         </div>
-
     </div>
-</div>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 

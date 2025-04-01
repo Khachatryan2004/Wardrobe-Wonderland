@@ -27,6 +27,8 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('email/', include(email_urls)),
     path('payment/', include('payment.urls')),
+    path('recommend/', include('recommend.urls')),
+    path('api/', include('api.urls')),
     # path('favorite/', include('favorite.urls')),
 ]
 

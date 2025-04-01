@@ -26,6 +26,7 @@
                     <th class="product-thumbnail">Image</th>
                     <th class="product-name">Product</th>
                     <th class="product-price">Price</th>
+                    <th class="product-price">Brand</th>
                     <th class="product-color">Color</th>
                     <th class="product-size">Size</th>
                     <th class="product-quantity">Quantity</th>
@@ -47,7 +48,15 @@
                           <h2 class="h5 text-black">{{ product.name }}</h2>
                       </a>
                     </td>
-                    <td>${{ product.price }}</td>
+                    <td>
+                      {% if product.discount %}
+                      <span class="fw-bold text-danger" style="text-decoration: line-through;">$ {{ product.price }}</span>
+                      <span class="h6 fw-bold">$ {{ product.get_discounted_price }}</span>
+                      {% else%}
+                      ${{ product.price }}
+                      {% endif %}
+                    </td>
+                    <td>{{ item.brand }}</td>
                     <td>{{ item.color }}</td>
                     <td>{{ item.size }}</td>
                     <td>
@@ -70,7 +79,14 @@
                 </div>
 
                     </td>
-                    <td>$ {{ product.price|mul:item.qty }}</td>
+                    <td>
+                      {% if product.discount %}
+                      <span class="fw-bold text-danger" style="text-decoration: line-through;">$ {{ product.price|mul:item.qty }}</span>
+                      <span class="h6 fw-bold">$ {{ product.get_discounted_price|mul:item.qty }}</span>
+                      {% else%}
+                      $ {{ product.price|mul:item.qty }}
+                      {% endif %}
+                    </td>
                     &nbsp;
                     <td>
                       &nbsp;

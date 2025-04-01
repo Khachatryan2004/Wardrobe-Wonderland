@@ -36,7 +36,7 @@ class Cart():
             item['total_price'] = item['price'] * item['qty']
             yield item
 
-    def add(self, item, quantity=1, color=None, size=None):
+    def add(self, item, quantity=1, color=None, size=None, brand=None):
         """
         Add an item to cart.
 
@@ -46,11 +46,14 @@ class Cart():
         """
         item_id = str(item.id)
         if item_id not in self.cart:
-            self.cart[item_id] = {'qty': quantity, 'price': str(item.price), 'color': color, 'size': size}
+            price = item.get_discounted_price() if item.discount else item.price
+            self.cart[item_id] = {'qty': quantity, 'price': str(price), 'color': color, 'size': size, 'brand':brand}
+        else:
+            self.cart[item_id]['qty'] += quantity
+            self.cart[item_id]['color'] = color
+            self.cart[item_id]['size'] = size
+            self.cart[item_id]['brand'] = brand
 
-        self.cart[item_id]['qty'] = quantity
-        self.cart[item_id]['color'] = color
-        self.cart[item_id]['size'] = size
         self.session.modified = True
 
     def delete(self, item):

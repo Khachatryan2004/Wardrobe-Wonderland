@@ -3,7 +3,6 @@ from shop.models import Category, ItemProxy
 from .cart import Cart
 from django.http import JsonResponse
 
-
 def cart_view(request):
     cart = Cart(request)
     categories = Category.objects.all()
@@ -12,7 +11,6 @@ def cart_view(request):
         'categories': categories
     }
     return render(request, 'cart_view.html', context)
-
 
 def cart_add(request):
     cart = Cart(request)
@@ -28,14 +26,13 @@ def cart_add(request):
 
         item = get_object_or_404(ItemProxy, id=item_id)
 
-        cart.add(item=item, quantity=item_qty, color=item_color, size=item_size)
+        cart.add(item=item, quantity=item_qty, color=item_color, size=item_size, brand=item.brand.brand)
 
         cart_qty = cart.__len__()
 
         response = JsonResponse({'qty': cart_qty, 'item': item.name})
 
         return response
-
 
 def cart_delete(request):
     cart = Cart(request)
@@ -46,7 +43,6 @@ def cart_delete(request):
         cart_total = cart.get_total_price()
         response = JsonResponse({'qty': cart_qty, 'total': cart_total})
         return response
-
 
 def cart_update(request):
     cart = Cart(request)

@@ -5,18 +5,18 @@ from .models import *
 from payment.models import *
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'updated_at', 'status', 'get_photo',)
-    list_display_links = ('name', 'get_photo')
-    list_editable = ('status',)
-    search_fields = ('name',)
-    prepopulated_fields = {'slug': ('name',)}
-
-    def get_photo(self, obj):
-        return mark_safe(f"<img src={obj.image.url} width='65' height='40/>'")
-
-    get_photo.short_description = 'Image'
+# @admin.register(Category)
+# class CategoryAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'updated_at', 'status', 'get_photo',)
+#     list_display_links = ('name', 'get_photo')
+#     list_editable = ('status',)
+#     search_fields = ('name',)
+#     prepopulated_fields = {'slug': ('name',)}
+#
+#     def get_photo(self, obj):
+#         return mark_safe(f"<img src={obj.image.url} width='65' height='40/>'")
+#
+#     get_photo.short_description = 'Image'
 
 
 @admin.register(MenSubCategory)
@@ -50,13 +50,14 @@ class WomenSubCategoryAdmin(admin.ModelAdmin):
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'name', 'price', 'updated_at', 'status', 'get_photo', 'category', 'men_sub_category',
-        'women_sub_category')
+        'id', 'name', 'price', 'discount', 'get_discounted_price', 'updated_at', 'brand', 'category',
+        'subcategory', 'type', 'get_photo', 'status',)
     list_display_links = ('name', 'get_photo',)
-    search_fields = ('name',)
+    search_fields = ('name', 'category')
     list_editable = ('status',)
+    filter_horizontal = ('color','size')
     prepopulated_fields = {'slug': ('name',)}
-    list_filter = ('category', 'men_sub_category', 'women_sub_category')
+    list_filter = ('category', 'subcategory__subcategory', 'brand__brand', 'color', 'type__type')
 
     # fieldsets = (
     #     ("Name and Slug", {

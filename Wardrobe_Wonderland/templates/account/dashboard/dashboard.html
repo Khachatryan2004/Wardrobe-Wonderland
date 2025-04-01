@@ -54,7 +54,7 @@
     <div class="row d-flex justify-content-center align-items-center">
       <div class="col-12 col-md-9 col-lg-7 col-xl-6">
         <div style="text-align: center; margin-bottom: 10px;">
-          <a class="" href="{% url 'account:dashboard' %}" style="color: black; font-size: 24px; display: block; margin: 50px auto 20px; width: 200px;">MY ACCOUNT</a>
+          <a class="" href="{% url 'account:dashboard' %}" style="text-decoration: none; color: black; font-size: 24px; display: block; margin: 50px auto 20px; width: 200px;">MY ACCOUNT</a>
         </div>
         <div class="card" style="border-radius: 36px;">
           <div class="card-body p-5">
@@ -62,7 +62,7 @@
             <br>
               <hr>
             <br>
-            <h2 class="mb-0 text-center" style="margin-top: -30px; font-size: 25px;"><a href="" style="color: black;">My Orders</a></h2>
+            <h2 class="mb-0 text-center" style="margin-top: -30px; font-size: 25px;"><a href="{% url 'payment:user_orders' %}" style="color: black;">My Orders</a></h2>
               <hr>
               <br>
             <h2 class="mb-0 text-center" style="margin-top: -30px; font-size: 25px;"><a href="{% url 'account:profile_management' %}" style="color: black;">My Details</a></h2>

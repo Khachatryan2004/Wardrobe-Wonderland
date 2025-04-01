@@ -1,9 +1,13 @@
 import uuid
 import stripe
+import weasyprint
+from django.contrib.admin.views.decorators import staff_member_required
+from django.template.loader import render_to_string
+from django.templatetags.static import static
 from yookassa import Configuration, Payment
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, Http404
 from .models import *
 from .forms import *
 from cart.cart import Cart
@@ -89,7 +93,17 @@ def complete_order(request):
                     for item in cart:
                         OrderItem.objects.create(
                             order=order, item=item['item'], price=item['price'], quantity=item['qty'],
-                            color=item['color'], size=item['size'], user=request.user)
+                            color=item['color'], size=item['size'], user=request.user, brand=item['brand'])
+                        UserOrder.objects.create(
+                            order=order,
+                            user=request.user,
+                            item=item['item'],
+                            quantity=item['qty'],
+                            price=item['price'],
+                            color=item['color'],
+                            size=item['size'],
+                            brand=item['brand']
+                        )
                         session_data['line_items'].append({
                             'price_data': {
                                 'unit_amount': int(item['price'] * Decimal(100)),
@@ -99,6 +113,7 @@ def complete_order(request):
                                     'metadata': {
                                         'color': item['color'],
                                         'size': item['size'],
+                                        'brand': item['brand']
                                     },
                                 },
                             },
@@ -113,7 +128,17 @@ def complete_order(request):
                     for item in cart:
                         OrderItem.objects.create(
                             order=order, item=item['item'], price=item['price'], quantity=item['qty'],
-                            color=item['color'], size=item['size'])
+                            color=item['color'], size=item['size'], brand=item['brand'])
+                        UserOrder.objects.create(
+                            order=order,
+                            user=request.user,
+                            item=item['item'],
+                            quantity=item['qty'],
+                            price=item['price'],
+                            color=item['color'],
+                            size=item['size'],
+                            brand=item['brand']
+                        )
 
                         session_data['line_items'].append({
                             'price_data': {
@@ -123,6 +148,7 @@ def complete_order(request):
                                 'metadata': {
                                     'color': item['color'],
                                     'size': item['size'],
+                                    'brand': item['brand']
                                 },
                             },
                             'quantity': item['qty'],
@@ -165,7 +191,16 @@ def complete_order(request):
                     for item in cart:
                         OrderItem.objects.create(
                             order=order, item=item['item'], price=item['price'], quantity=item['qty'],
-                            color=item['color'], size=item['size'], user=request.user)
+                            color=item['color'], size=item['size'], brand=item['brand'], user=request.user)
+                        UserOrder.objects.create(
+                            user=request.user,
+                            item=item['item'],
+                            quantity=item['qty'],
+                            price=item['price'],
+                            color=item['color'],
+                            size=item['size'],
+                            brand=item['brand']
+                        )
 
                     return redirect(confirmation_url)
 
@@ -176,7 +211,28 @@ def complete_order(request):
                     for item in cart:
                         OrderItem.objects.create(
                             order=order, item=item['item'], price=item['price'], quantity=item['qty'],
-                            color=item['color'], size=item['size'])
+                            color=item['color'], size=item['size'], brand=item['brand'])
+                        UserOrder.objects.create(
+                            order=order,
+                            user=request.user,
+                            item=item['item'],
+                            quantity=item['qty'],
+                            price=item['price'],
+                            color=item['color'],
+                            size=item['size'],
+                            brand=item['brand']
+                        )
+
+
+@login_required
+def user_orders(request):
+    orders = UserOrder.objects.filter(user=request.user).select_related('item', 'order')
+    total_cost = sum(order.price * order.quantity for order in orders)
+
+    return render(request, 'dashboard/user_orders.html', {
+        'orders': orders,
+        'total_cost': total_cost,
+    })
 
 
 def payment_success(request):
@@ -188,3 +244,17 @@ def payment_success(request):
 
 def payment_failed(request):
     return render(request, 'payment_failed.html')
+
+
+@staff_member_required
+def admin_order_pdf(request, order_id):
+    try:
+        order = Order.objects.select_related('user', 'shipping_address').get(id=order_id)
+    except Order.DoesNotExist:
+        raise Http404('Order not found')
+    html = render_to_string('order/pdf/pdf_invoice.html',
+                            {'order': order})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'filename=order_{order.id}.pdf'
+    weasyprint.HTML(string=html).write_pdf(response)
+    return response

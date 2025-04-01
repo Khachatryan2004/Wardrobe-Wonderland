@@ -1,0 +1,69 @@
+<style>
+    .block-4-image {
+    position: relative;
+    width: 100%;
+}
+
+.sale-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: red;
+    color: white;
+    padding: 3px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+</style>
+
+{% if items %}
+    {% for item in items %}
+        <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+            <div class="block-4 text-center border">
+                <figure class="block-4-image position-relative">
+                    <a href="{% url 'item_detail' slug=item.slug %}">
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="img-fluid">
+                        {% if item.discount %}
+                            <div class="sale-label">SALE</div>
+                        {% endif %}
+                    </a>
+                </figure>
+                <div class="block-4-text p-4">
+                    <h3><a href="{% url 'item_detail' slug=item.slug %}">{{ item.name }}</a></h3>
+                    <p class="mb-0">{{ item.category.name }}</p>
+                    <p class="mb-0">{{ item.men_sub_category.name }}</p>
+                    <p class="mb-0">{{ item.women_sub_category.name }}</p>
+                    {% if item.discount %}
+                    <p class="text-primary font-weight-bold text-danger">${{ item.get_discounted_price }}</p>
+                    {% else %}
+                    <p class="text-primary font-weight-bold">${{ item.price }}</p>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        <button type="button" class="add-favorite-btn" value="{{ item.id }}">
+                            <span class="icon icon-heart-o"></span>
+                        </button>
+                    {% else %}
+                        <form method="post" action="{% url 'cart_warning_page' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="cart-btn">
+                                <span class="icon icon-heart-o"></span>
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if forloop.last %}
+            <div class="col" id="pagination-container"
+                hx-get="{% url 'item_list' %}?page={{ page_obj.number|add:1 }}&{{ request.GET.urlencode }}"
+                hx-trigger="revealed"
+                hx-swap="outerHTML">
+            </div>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <p>No items found.</p>
+{% endif %}

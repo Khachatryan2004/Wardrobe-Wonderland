@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import environ
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'shop.User'
 
@@ -47,13 +48,19 @@ INSTALLED_APPS = [
     'django_email_verification',
     'django_celery_beat',
     'django_celery_results',
+    'rest_framework',
+    'djoser',
+    'drf_yasg',
 
     # apps
+    'item_manager',
     'shop',
     'cart',
     'account',
     'payment',
-    'favorite'
+    'favorite',
+    'recommend',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +69,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_htmx.middleware.HtmxMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -77,6 +85,7 @@ TEMPLATES = [
             BASE_DIR / 'templates' / 'account',
             BASE_DIR / 'templates' / 'payment',
             BASE_DIR / 'templates' / 'favorite',
+            BASE_DIR / 'templates' / 'recommend',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -108,11 +117,11 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'wardrobewonderland',
-#         'USER': 'postgres',
-#         'PASSWORD': 'pupsikpersik',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+#         'NAME': env('POSTGRES_DB'),
+#         'USER': env('POSTGRES_USER'),
+#         'PASSWORD': env('POSTGRES_PASSWORD'),
+#         'HOST': env('POSTGRES_HOST'),
+#         'PORT': env('POSTGRES_PORT', default=5432),
 #     }
 # }
 
@@ -153,6 +162,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static/'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -218,8 +228,11 @@ YOOKASSA_SECRET_KEY = env('YOOKASSA_SECRET_KEY')
 YOOKASSA_SHOP_ID = env('YOOKASSA_SHOP_ID')
 
 # Celery
-# TO RUN CELERY -> | celery -A Wardrobe_Wonderland worker -l info | and | celery -A Wardrobe_Wonderland beat -l info |
-# AND RUN FLOWER -> celery -A Wardrobe_Wonderland flower
+# TO RUN CELERY ->  { celery -A Wardrobe_Wonderland worker -l info }
+# IF YOU HAVE ISSUE TRY { celery -A Wardrobe_Wonderland worker -l info -P gevent }
+# AFTER THAT { celery -A Wardrobe_Wonderland beat -l info }
+# AND RUN FLOWER -> { celery -A Wardrobe_Wonderland flower }
+# TO SEE FLOWER -> | http://127.0.0.1:5555/
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_RESULT_EXTENDED = True
@@ -232,3 +245,28 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 #         "schedule": crontab(minute="*/1"),
 #     },
 # }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "api.permissions.IsAdminOrReadOnly",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "api.pagination.StandardResultsSetPagination",
+    "PAGE_SIZE": 15,
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "SERIALIZERS": {
+        "user_create": "api.serializers.CustomUserCreateSerializer",
+    },
+    'AUTH_HEADER_TYPES': ('JWT',),
+
+}

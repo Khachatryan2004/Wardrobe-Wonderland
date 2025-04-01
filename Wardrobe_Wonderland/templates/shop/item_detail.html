@@ -19,26 +19,36 @@
             <div class="col-md-6">
                 <h2 class="text-black">{{ item.name }}</h2>
                 <p>{{ item.description }}</p>
+                {% if item.discount %}
+                <div class="col-6 text-end">
+                    <strong class="text-danger h4">Now ${{ item.get_discounted_price }}</strong>
+                    <br>
+                    <span class="text-primary h7 fw-bold">Was ${{ item.price }}</span>
+                    <span class="text-primary h7 fw-bold text-danger">(-{{ item.discount }}%)</span>
+                </div>
+                {% else%}
                 <p><strong class="text-primary h4">${{ item.price }}</strong></p>
+                {% endif %}
+                <br>
 
 
                     <div class="mb-4">
-                        {% if item.men_sub_category.name == 'Clothing' or item.women_sub_category.name == 'Clothing' %}
-                        <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
-                            <div class="form-group">
-                                <select class="form-control" id="sizeDropdown" name="size_clothing">
-                                    <option value="" selected disabled>Choose a size</option>
-                                    {% for size, label in SIZE_CHOICES_CLOTHING %}
-                                    <option value="{{ size }}">{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
+                        {% if item.subcategory %}
+                        <div class="form-group">
+                            <h3 class="mb-3 h6 text-uppercase text-black d-block">Size</h3>
+                            <select class="form-control" id="sizeDropdown" name="size">
+                                <option value="" selected disabled>Choose a size</option>
+                                {% for size in sizes %}
+                                    <option value="{{ size }}">{{ size.size }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
                                 <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
                                 <select class="form-control" id="colorDropdown" name="clothing_color">
                                     <option value="" selected disabled>Choose a color</option>
-                                    {% for color, label in CLOTHING_COLOR %}
-                                    <option value="{{ color }}">{{ label }}</option>
+                                    {% for color in colors %}
+                                    <option value="{{ color }}">{{ color.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -129,7 +139,9 @@
                 </div>
             </div>
         </div>
+        {% include 'recommendation.html' %}
     </div>
+
 
     <div class="site-section block-3 site-blocks-2 bg-light">
         <div class="container">

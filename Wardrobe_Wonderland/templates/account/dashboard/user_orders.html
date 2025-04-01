@@ -1,0 +1,162 @@
+{% load crispy_forms_tags %}
+{% load static %}
+{% load mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Wardrobe &mdash; Wonderland</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+    <link rel="stylesheet" href="{% static 'shop/fonts/icomoon/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'shop/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/owl.theme.default.min.css' %}">
+
+
+    <link rel="stylesheet" href="{% static 'shop/css/aos.css' %}">
+
+    <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+    }
+
+</style>
+</head>
+<body>
+  <div class="site-wrap">
+    <header class="site-navbar" role="banner" style="background-color: #f2f2f2;">
+          <div class="site-navbar-top">
+              <div class="container">
+                  <div class="row align-items-center justify-content-center">
+                      <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
+                          <div class="site-logo">
+                              <a href="{% url 'category' %}" class="js-logo-clone" style="display: inline-block;">Wardrobe Wonderland</a>
+
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </header>
+      <div style="text-align: center; margin-bottom: 10px;">
+          <a class="" href="{% url 'account:dashboard' %}" style="text-decoration: none; color: black; font-size: 24px; display: block; margin: 50px auto 20px; width: 200px;">MY ACCOUNT</a>
+        </div>
+  <section class="h-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100" style="max-width: 1000%; margin: auto;">
+      <div>
+
+        <div class="card" style="border-radius: 10px;">
+          <div class="card-header px-4 py-5">
+              {% if orders %}
+            <h3 class="color: black;" >My Orders </h3>
+          </div>
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <p class="lead fw-normal mb-0" style="color: #a8729a;">Receipt</p>
+            </div>
+
+            {% for order in orders %}
+            <div class="card shadow-0 border mb-4">
+                <a href="{% url 'item_detail' slug=order.item.slug %}">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-2">
+                    <img src=" {{ order.item.image.url }}"
+                      class="img-fluid" alt="Image">
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <strong class="text-muted mb-0 big" >{{ order.item.name }}</strong>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                     <strong class="text-muted mb-0 big">{{ order.brand }}</strong>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                     <strong class="text-muted mb-0 big">{{ order.color }}</strong>
+                  </div>
+                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                     <strong class="text-muted mb-0 big">{{ order.size }}</strong>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                     <strong class="text-muted mb-0 big">qty:{{ order.quantity }}</strong>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                     <strong class="text-muted mb-0 big">${{ order.price }}</strong>
+                  </div>
+                    <br>
+                    <br>
+                </div>
+                  </a>
+                <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                <div class="row d-flex align-items-center">
+                  <div class="col-md-2">
+                      <strong class="text-muted mb-0 small">Track Order</strong>
+                  </div>
+                  <div class="col-md-10">
+                    <div class="progress" style="height: 6px; border-radius: 16px;">
+                      <div class="progress-bar" role="progressbar"
+                        style="width: 20%; border-radius: 16px; background-color: #a8729a;" aria-valuenow="20"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-flex justify-content-around mb-1">
+                      <strong class="text-muted mt-1 mb-0 small ms-xl-5">In Progress</strong>
+                      <strong class="text-muted mt-1 mb-0 small ms-xl-5">Shipped</strong>
+                      <strong class="text-muted mt-1 mb-0 small ms-xl-5">Scheduled</strong>
+                      <strong class="text-muted mt-1 mb-0 small ms-xl-5">Received</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between pt-2">
+              <strong class="lead fw-normal mb-0" style="color: #a8729a;">Order Details</strong>
+              <strong class="text-muted mb-0"><span class="fw-bold me-4">Total</span> ${{ order.price|mul:order.quantity }}</strong>
+            </div>
+
+            <div class="d-flex justify-content-between pt-2">
+              <strong class="text-muted mb-0">Invoice Number : {{ order.id }}</strong>
+                {% if order.item.discount %}
+              <strong class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> -{{ order.item.discount }}%</strong>
+                {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <strong class="text-muted mb-0">Invoice Date : {{ order.order.created_at|date:'F d, Y' }}</strong>
+            </div>
+            <br>
+            {% endfor %}
+          </div>
+
+          <div class="card-footer border-0 px-4 py-5"
+            style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+            <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
+              paid: <span class="h2 mb-0 ms-2"> ${{ total_cost }}</span></h5>
+          </div>
+        </div>
+        {% else %}
+          <h3 class="color: black;" >YOU CURRENTLY HAVE NO ORDERS</h3>
+        <br>
+        <a href="{% url 'item_list' %}" style="text-decoration: none;">
+            <button type="submit" class="btn btn-secondary w-100 btn-block p-2 btn-register">START SHOPPING</button>
+        </a>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

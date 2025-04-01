@@ -61,16 +61,6 @@
                       <h3><a href="{% url 'item_detail' slug=item.slug %}">{{ item.name }}</a></h3>
                       <p class="mb-0">{{ item.category.name }}</p>
                       <p class="text-primary font-weight-bold">${{ item.price }}</p>
-
-                      <form method="post" action="{% url 'add_to_favorites' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="slug" value="{{ item.slug }}">
-                        <input type="hidden" name="name" value="{{ item.name }}">
-                        <input type="hidden" name="image" value="{{ item.image.url }}">
-                        <input type="hidden" name="category" value="{{ item.category.name }}">
-                        <input type="hidden" name="price" value="{{ item.price }}">
-                        <button type="submit" class="btn btn-link"><span class="icon icon-heart-o"></span></button>
-                      </form>
                     </div>
                   </div>
                 </div>
